@@ -74,15 +74,20 @@ jobs:
         working-directory: packages/desktop-app
         run: |
           echo "Running on: ${{ runner.os }}"
+          echo "Node version: $(node --version)"
+          echo "PNPM version: $(pnpm --version)"
           if [[ "${{ runner.os }}" == "Windows" ]]; then
             echo "Building for Windows..."
             pnpm run package:win
+            echo "Build completed with exit code: $?"
           elif [[ "${{ runner.os }}" == "macOS" ]]; then
             echo "Building for macOS..."
             pnpm run package:mac
+            echo "Build completed with exit code: $?"
           else
             echo "Building for Linux..."
             pnpm run package:linux
+            echo "Build completed with exit code: $?"
           fi
         shell: bash
 
@@ -90,21 +95,20 @@ jobs:
         working-directory: packages/desktop-app
         shell: bash
         run: |
-          echo "Release directory contents:"
-          ls -la release/ || echo "Release directory not found"
+          echo "=== Release directory contents ==="
+          if [ -d "release" ]; then
+            find release -type f -exec ls -lh {} \; || echo "No files found"
+          else
+            echo "Release directory does not exist"
+          fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: sortfiles-${{ runner.os }}
-          path: |
-            packages/desktop-app/release/*.deb
-            packages/desktop-app/release/*.AppImage
-            packages/desktop-app/release/*.exe
-            packages/desktop-app/release/*.dmg
-            packages/desktop-app/release/*.zip
-          retention-days: 30
-          if-no-files-found: error
+        path: packages/desktop-app/release/
+        retention-days: 30
+        if-no-files-found: error
 
   test-linux:
     needs: build
