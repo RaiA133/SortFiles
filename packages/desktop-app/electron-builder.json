@@ -14,7 +14,10 @@
     "node_modules/**/*",
     "package.json"
   ],
-  "asar": false,
+  "asar": true,
+  "asarUnpack": [
+    "node_modules/@sortfiles/**"
+  ],
   "publish": {
     "provider": "github",
     "owner": "sortfiles",
