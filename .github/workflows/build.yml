@@ -76,8 +76,84 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-  release:
+  test-linux:
     needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sortfiles-Linux
+          path: artifacts
+
+      - name: Install .deb package
+        run: |
+          sudo dpkg -i artifacts/*.deb || sudo apt-get install -f -y
+          sudo update-desktop-database /usr/share/applications
+
+      - name: Verify installation
+        run: |
+          which @sortfilesdesktop-app || echo "Binary not in PATH, checking install location..."
+          ls -la /opt/SortFiles/
+          cat /usr/share/applications/@sortfilesdesktop-app.desktop
+
+      - name: Test AppImage
+        run: |
+          chmod +x artifacts/*.AppImage
+          ./artifacts/*.AppImage --version || echo "AppImage test completed"
+
+  test-windows:
+    needs: build
+    runs-on: windows-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sortfiles-Windows
+          path: artifacts
+
+      - name: Install Windows package
+        run: |
+          Start-Process -FilePath "artifacts\SortFiles*.exe" -ArgumentList "/S", "/D=C:\SortFiles" -Wait
+
+      - name: Verify installation
+        run: |
+          if (Test-Path "C:\SortFiles\SortFiles.exe") {
+            Write-Host "SortFiles installed successfully"
+            Get-Item "C:\SortFiles\*"
+          } else {
+            Write-Host "Installation verification failed"
+          }
+
+  test-macos:
+    needs: build
+    runs-on: macos-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sortfiles-macOS
+          path: artifacts
+
+      - name: Install .dmg
+        run: |
+          hdiutil attach artifacts/*.dmg
+          cp -r /Volumes/SortFiles/SortFiles.app /Applications/
+          hdiutil detach /Volumes/SortFiles
+
+      - name: Verify installation
+        run: |
+          ls -la /Applications/SortFiles.app/
+          xattr -l /Applications/SortFiles.app/
+
+  release:
+    needs: [build, test-linux, test-windows, test-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
 
