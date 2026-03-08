@@ -6,6 +6,8 @@ node_modules/
 # Build outputs
 dist/
 build/
+!build/icon.*
+!build/icons/
 *.tsbuildinfo
 .next/
 out/
