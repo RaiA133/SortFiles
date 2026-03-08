@@ -172,8 +172,10 @@ jobs:
           dmg_file=$(ls artifacts/*.dmg | head -n 1)
           echo "Installing $dmg_file"
           hdiutil attach "$dmg_file"
-          cp -r /Volumes/SortFiles/SortFiles.app /Applications/
-          hdiutil detach /Volumes/SortFiles
+          # Find and copy the app (handle dynamic volume names)
+          find /Volumes -name "SortFiles.app" -maxdepth 2 -exec cp -R {} /Applications/ \;
+          # Detach all SortFiles volumes
+          hdiutil detach /Volumes/SortFiles* -force || true
 
       - name: Verify installation
         if: steps.download.outcome == 'success'
