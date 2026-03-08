@@ -29,6 +29,17 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Wine (for Windows build on Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo wget -nc https://dl.winehq.org/wine-builds/winehq.key
+          sudo mv winehq.key /usr/share/keyrings/winehq-archive.key
+          sudo apt-add-repository 'https://dl.winehq.org/wine-builds/ubuntu/'
+          sudo apt update
+          sudo apt install -y winehq-stable
+          wine --version
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -184,7 +195,7 @@ jobs:
           xattr -l /Applications/SortFiles.app/ || echo "Cannot read attributes"
 
   release:
-    needs: build
+    needs: [build, test-linux, test-windows, test-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
 
