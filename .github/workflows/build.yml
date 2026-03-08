@@ -33,11 +33,11 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo dpkg --add-architecture i386
-          sudo wget -nc https://dl.winehq.org/wine-builds/winehq.key
-          sudo mv winehq.key /usr/share/keyrings/winehq-archive.key
-          sudo apt-add-repository 'https://dl.winehq.org/wine-builds/ubuntu/'
+          sudo mkdir -pm755 /etc/apt/keyrings
+          sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+          sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
           sudo apt update
-          sudo apt install -y winehq-stable
+          sudo apt install -y --install-recommends winehq-stable
           wine --version
 
       - name: Install pnpm
