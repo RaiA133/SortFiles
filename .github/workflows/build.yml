@@ -54,6 +54,10 @@ jobs:
       - name: Build workspace packages
         run: pnpm --filter @sortfiles/ai-providers build && pnpm --filter @sortfiles/core build
 
+      - name: Clean release directory
+        working-directory: packages/desktop-app
+        run: rm -rf release
+
       - name: Build desktop app
         working-directory: packages/desktop-app
         run: |
