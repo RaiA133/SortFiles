@@ -56,7 +56,8 @@ jobs:
 
       - name: Clean release directory
         working-directory: packages/desktop-app
-        run: rm -rf release
+        shell: bash
+        run: rm -rf release || true
 
       - name: Build desktop app
         working-directory: packages/desktop-app
