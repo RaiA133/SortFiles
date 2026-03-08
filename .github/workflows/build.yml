@@ -73,14 +73,25 @@ jobs:
       - name: Build desktop app
         working-directory: packages/desktop-app
         run: |
-          if [ "${{ runner.os }}" = "Windows" ]; then
+          echo "Running on: ${{ runner.os }}"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "Building for Windows..."
             pnpm run package:win
-          elif [ "${{ runner.os }}" = "macOS" ]; then
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "Building for macOS..."
             pnpm run package:mac
           else
+            echo "Building for Linux..."
             pnpm run package:linux
           fi
         shell: bash
+
+      - name: List release directory
+        working-directory: packages/desktop-app
+        shell: bash
+        run: |
+          echo "Release directory contents:"
+          ls -la release/ || echo "Release directory not found"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -93,7 +104,7 @@ jobs:
             packages/desktop-app/release/*.dmg
             packages/desktop-app/release/*.zip
           retention-days: 30
-          if-no-files-found: warn
+          if-no-files-found: error
 
   test-linux:
     needs: build
