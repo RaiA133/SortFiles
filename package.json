@@ -1,0 +1,34 @@
+{
+  "name": "sortfiles-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Powered File Organizer - Cross-platform Desktop Application",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "package": "npm run build && cd packages/desktop-app && npm run package",
+    "package:mac": "npm run build && cd packages/desktop-app && npm run package:mac",
+    "package:win": "npm run build && cd packages/desktop-app && npm run package:win",
+    "package:linux": "npm run build && cd packages/desktop-app && npm run package:linux",
+    "release": "npm run build && cd packages/desktop-app && npm run release",
+    "postinstall": "node -e \"process.exit(0)\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "turbo": "^1.12.4",
+    "prettier": "^3.2.4",
+    "eslint": "^8.56.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

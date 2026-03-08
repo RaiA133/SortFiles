@@ -1,0 +1,56 @@
+{
+  "name": "@sortfiles/core",
+  "version": "0.1.0",
+  "description": "Core business logic for SortFiles file organizer",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./file-scanner": {
+      "types": "./dist/file-scanner/index.d.ts",
+      "import": "./dist/file-scanner/index.js",
+      "default": "./dist/file-scanner/index.js"
+    },
+    "./file-operator": {
+      "types": "./dist/file-operator/index.d.ts",
+      "import": "./dist/file-operator/index.js",
+      "default": "./dist/file-operator/index.js"
+    },
+    "./rule-engine": {
+      "types": "./dist/rule-engine/index.d.ts",
+      "import": "./dist/rule-engine/index.js",
+      "default": "./dist/rule-engine/index.js"
+    },
+    "./undo-manager": {
+      "types": "./dist/undo-manager/index.d.ts",
+      "import": "./dist/undo-manager/index.js",
+      "default": "./dist/undo-manager/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "default": "./dist/types/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}
