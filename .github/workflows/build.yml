@@ -51,6 +51,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build workspace packages
+        run: pnpm --filter @sortfiles/ai-providers build && pnpm --filter @sortfiles/core build
+
       - name: Build desktop app
         working-directory: packages/desktop-app
         run: |
